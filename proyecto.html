@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portal de Atención Ciudadana COPACI</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- CONTENEDOR DE TOASTS -->
+  <div id="toast-container"></div>
+
+  <!-- PANTALLA 1: AUTENTICACIÓN (LOGIN Y REGISTRO) -->
+  <div id="screen-auth" class="wrapper-autenticacion">
+    
+    <!-- TARJETA INICIO DE SESIÓN -->
+    <div id="box-login" class="tarjeta-acceso">
+      <div class="encabezado-acceso">
+        <h1>Portal COPACI</h1>
+        <p>Atención Ciudadana y Gestión Vecinal</p>
+      </div>
+      <form id="form-login">
+        <div class="grupo-entrada">
+          <label>Correo Electrónico</label>
+          <input type="email" id="login-email" required placeholder="correo@ejemplo.com">
+        </div>
+        <div class="grupo-entrada">
+          <label>Contraseña</label>
+          <input type="password" id="login-password" required placeholder="••••••••">
+        </div>
+        <div id="error-login" class="alerta-error">Credenciales incorrectas. Verifique sus datos.</div>
+        <button type="submit" class="boton-accion">Ingresar al Portal</button>
+      </form>
+      <div class="alternar-modo">
+        ¿No tienes cuenta vecinal? <span onclick="switchAuth('registro')">Regístrate aquí</span>
+      </div>
+    </div>
+
+    <!-- TARJETA REGISTRO (EXCLUSIVO VECINOS) -->
+    <div id="box-registro" class="tarjeta-acceso" style="display: none;">
+      <div class="encabezado-acceso">
+        <h1>Registro de Vecino</h1>
+        <p>Crea tu cuenta de residente</p>
+      </div>
+      <form id="form-registro">
+        <div class="grupo-entrada">
+          <label>Nombre Completo</label>
+          <input type="text" id="reg-nombre" required placeholder="Nombre y Apellidos">
+        </div>
+        <div class="grupo-entrada">
+          <label>Domicilio</label>
+          <input type="text" id="reg-domicilio" required placeholder="Calle, N° exterior e interior">
+        </div>
+        <div class="grupo-entrada">
+          <label>Correo Electrónico</label>
+          <input type="email" id="reg-email" required placeholder="correo@ejemplo.com">
+        </div>
+        <div class="grupo-entrada">
+          <label>Contraseña</label>
+          <input type="password" id="reg-password" required placeholder="Crea una clave">
+        </div>
+        <div id="error-registro" class="alerta-error">El correo ingresado ya está registrado.</div>
+        <button type="submit" class="boton-accion" style="background-color: var(--success); box-shadow: 0 10px 20px -5px rgba(16, 185, 129, 0.4);">Crear Mi Cuenta</button>
+      </form>
+      <div class="alternar-modo">
+        ¿Ya tienes cuenta? <span onclick="switchAuth('login')">Inicia Sesión</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- PANTALLA 2: INTERFAZ DE VECINO (PÁGINA WEB INSTITUCIONAL) -->
+  <div id="interface-vecino" class="web-vecino-container" style="display: none;">
+    
+    <!-- BARRA DE NAVEGACIÓN -->
+    <header class="navbar-vecino">
+      <div class="navbar-content">
+        <div class="brand-logo">
+          <div class="brand-logo-icon">C</div>
+          <div>
+            <strong style="display: block; font-size: 1.1rem; letter-spacing: -0.02em;">COPACI Vecinal</strong>
+            <span style="font-size: 0.75rem; color: var(--text-secondary);">Atención Ciudadana</span>
+          </div>
+        </div>
+        <div style="display: flex; align-items: center; gap: 20px;">
+          <div style="text-align: right;">
+            <strong id="vecino-user-name" style="display: block; font-size: 0.9rem;">Vecino</strong>
+            <span style="font-size: 0.75rem; color: var(--success);">● Residente Verificado</span>
+          </div>
+          <button onclick="logout()" class="btn-tabla btn-borrar" style="padding: 8px 14px;">Cerrar Sesión</button>
+        </div>
+      </div>
+    </header>
+
+    <!-- PORTADA TIPO PÁGINA WEB (HERO) -->
+    <section class="hero-section">
+      <div>
+        <span style="display: inline-block; padding: 6px 14px; background: rgba(59, 130, 246, 0.1); color: var(--accent); border: 1px solid rgba(59, 130, 246, 0.2); border-radius: 20px; font-size: 0.75rem; font-weight: 700; margin-bottom: 16px;">Portal de Atención Digital</span>
+        <h1 class="hero-title">Tu comunidad más conectada y atendida.</h1>
+        <p class="hero-subtitle">Realiza trámites vecinales, constancias y reporta fallas en alumbrado, agua o vialidad en tiempo real directamente a la mesa directiva.</p>
+      </div>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div style="font-size: 2rem; margin-bottom: 8px;">💡</div>
+          <h3 style="font-size: 1rem; margin-bottom: 4px;">Alumbrado</h3>
+          <p style="font-size: 0.8rem; color: var(--text-secondary);">Reporte inmediato de luminarias.</p>
+        </div>
+        <div class="feature-card">
+          <div style="font-size: 2rem; margin-bottom: 8px;">💧</div>
+          <h3 style="font-size: 1rem; margin-bottom: 4px;">Agua Potable</h3>
+          <p style="font-size: 0.8rem; color: var(--text-secondary);">Atención a fugas y red.</p>
+        </div>
+        <div class="feature-card">
+          <div style="font-size: 2rem; margin-bottom: 8px;">📜</div>
+          <h3 style="font-size: 1rem; margin-bottom: 4px;">Constancias</h3>
+          <p style="font-size: 0.8rem; color: var(--text-secondary);">Constancias vecinales en línea.</p>
+        </div>
+        <div class="feature-card">
+          <div style="font-size: 2rem; margin-bottom: 8px;">🛣️</div>
+          <h3 style="font-size: 1rem; margin-bottom: 4px;">Vías Públicas</h3>
+          <p style="font-size: 0.8rem; color: var(--text-secondary);">Bacheo y limpieza comunitaria.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- FORMULARIOS DE SERVICIOS -->
+    <section class="seccion-servicios">
+      <div class="grid-formularios">
+        
+        <!-- REPORTAR INCIDENCIA -->
+        <div class="panel-servicio">
+          <h2 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 8px;">📢 Reportar Incidencia Urbana</h2>
+          <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 24px;">Notifica desperfectos en tu calle o colonia.</p>
+          <form id="form-vecino-incidencia">
+            <div class="grupo-entrada">
+              <label>Categoría de la Falla</label>
+              <select id="v-inc-cat">
+                <option value="Alumbrado Público">Alumbrado Público</option>
+                <option value="Fuga de Agua Potable">Fuga de Agua Potable</option>
+                <option value="Mantenimiento de Vías">Mantenimiento de Vías</option>
+                <option value="Limpieza y Desecho">Limpieza y Desecho</option>
+              </select>
+            </div>
+            <div class="grupo-entrada">
+              <label>Ubicación Exacta</label>
+              <input type="text" id="v-inc-lugar" required placeholder="Calle, número o esquina de referencia">
+            </div>
+            <div class="grupo-entrada">
+              <label>Descripción del Problema</label>
+              <textarea id="v-inc-detalle" rows="3" required placeholder="Detalla la situación observada..."></textarea>
+            </div>
+            <button type="submit" class="boton-accion">Enviar Reporte a COPACI</button>
+          </form>
+        </div>
+
+        <!-- SOLICITAR TRÁMITE -->
+        <div class="panel-servicio">
+          <h2 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 8px;">📄 Solicitar Trámite Documental</h2>
+          <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 24px;">Emisión de documentos y gestiones oficiales.</p>
+          <form id="form-vecino-tramite">
+            <div class="grupo-entrada">
+              <label>Tipo de Solicitud</label>
+              <select id="v-tra-tipo">
+                <option value="Constancia Vecinal">Constancia Vecinal</option>
+                <option value="Certificado de No Infracción">Certificado de No Infracción</option>
+                <option value="Petición Comunitaria">Petición Comunitaria</option>
+              </select>
+            </div>
+            <div class="grupo-entrada">
+              <label>Motivo / Exposición de Hechos</label>
+              <textarea id="v-tra-motivo" rows="5" required placeholder="Explica el motivo por el cual requieres la constancia..."></textarea>
+            </div>
+            <button type="submit" class="boton-accion" style="background-color: var(--success); box-shadow: 0 10px 20px -5px rgba(16, 185, 129, 0.4);">Solicitar Documento</button>
+          </form>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- HISTORIAL PERSONAL DEL VECINO -->
+    <section class="seccion-servicios" style="padding-top: 0;">
+      <h2 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 20px;">Mis Reportes y Gestiones Registradas</h2>
+      <div class="grid-formularios">
+        
+        <div class="panel-servicio">
+          <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 16px;">📢 Mis Incidencias Urbanas</h3>
+          <div class="tabla-container" style="margin-top: 0;">
+            <table class="tabla-datos">
+              <thead>
+                <tr>
+                  <th>Categoría</th>
+                  <th>Ubicación</th>
+                  <th>Estatus</th>
+                </tr>
+              </thead>
+              <tbody id="vecino-table-incidencias"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="panel-servicio">
+          <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 16px;">📑 Mis Trámites</h3>
+          <div class="tabla-container" style="margin-top: 0;">
+            <table class="tabla-datos">
+              <thead>
+                <tr>
+                  <th>Clave</th>
+                  <th>Asunto</th>
+                  <th>Estatus</th>
+                </tr>
+              </thead>
+              <tbody id="vecino-table-tramites"></tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </div>
+
+  <!-- PANTALLA 3: INTERFAZ DE ADMINISTRADOR (EXCLUSIVO GESTIÓN) -->
+  <div id="interface-admin" class="admin-layout" style="display: none;">
+    
+    <!-- BARRA LATERAL ADMIN -->
+    <aside class="admin-sidebar">
+      <div>
+        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 40px;">
+          <div style="width: 36px; height: 36px; background: rgba(245, 158, 11, 0.2); border: 1px solid rgba(245, 158, 11, 0.3); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: var(--warning);">⚙️</div>
+          <div>
+            <strong style="display: block; font-size: 0.9rem;">Mesa de Control</strong>
+            <span style="font-size: 0.75rem; color: var(--warning); font-weight: 600;">Administrador</span>
+          </div>
+        </div>
+        <div style="padding: 12px 16px; background: rgba(59, 130, 246, 0.15); border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 12px; color: #93c5fd; font-size: 0.9rem; font-weight: 600;">
+          🛠️ Control de Incidencias
+        </div>
+      </div>
+      <div>
+        <div style="margin-bottom: 16px;">
+          <strong id="admin-user-name" style="display: block; font-size: 0.9rem;">Admin COPACI</strong>
+          <span style="font-size: 0.75rem; color: var(--text-secondary);">admin@copaci.org</span>
+        </div>
+        <button onclick="logout()" class="btn-tabla btn-borrar" style="width: 100%; padding: 10px; text-align: center;">Cerrar Sesión</button>
+      </div>
+    </aside>
+
+    <!-- CONTENIDO PRINCIPAL ADMIN -->
+    <main class="admin-main">
+      <div style="margin-bottom: 30px;">
+        <h1 style="font-size: 1.75rem; font-weight: 800; letter-spacing: -0.025em; margin-bottom: 6px;">Gestión General de Incidencias Urbanas</h1>
+        <p style="font-size: 0.9rem; color: var(--text-secondary);">Módulo exclusivo para consultar, actualizar estados, editar y eliminar reportes de la comunidad.</p>
+      </div>
+
+      <!-- MÉTRICAS -->
+      <div class="metrics-grid">
+        <div class="metric-card">
+          <span>Total Incidencias</span>
+          <div id="stat-total" class="value">0</div>
+        </div>
+        <div class="metric-card">
+          <span style="color: var(--warning);">Pendientes</span>
+          <div id="stat-pendientes" class="value" style="color: var(--warning);">0</div>
+        </div>
+        <div class="metric-card">
+          <span style="color: var(--success);">Resueltos</span>
+          <div id="stat-resueltos" class="value" style="color: var(--success);">0</div>
+        </div>
+      </div>
+
+      <!-- BUSCADOR -->
+      <div class="grupo-entrada" style="margin-bottom: 20px;">
+        <input type="text" id="admin-search" oninput="renderAdminIncidencias()" placeholder="🔍 Buscar por folio, vecino, categoría, ubicación o descripción...">
+      </div>
+
+      <!-- TABLA DE CONTROL -->
+      <div class="tabla-container">
+        <table class="tabla-datos">
+          <thead>
+            <tr>
+              <th>Reportado Por</th>
+              <th>Categoría</th>
+              <th>Ubicación</th>
+              <th>Detalle del Reporte</th>
+              <th>Estatus</th>
+              <th style="text-align: center;">Acciones de Edición</th>
+            </tr>
+          </thead>
+          <tbody id="admin-table-body"></tbody>
+        </table>
+      </div>
+    </main>
+
+  </div>
+
+  <!-- MOTOR LÓGICO -->
+  <script>
+    let dbUsuarios = JSON.parse(localStorage.getItem('copaci_v2_users')) || [
+      { nombre: "Administración General", domicilio: "Oficina COPACI", email: "admin@copaci.org", pass: "copaci123", rol: "Administrador" }
+    ];
+
+    let dbIncidencias = JSON.parse(localStorage.getItem('copaci_v2_issues')) || [
+      { id: 1, categoria: "Alumbrado Público", lugar: "Av. Hidalgo Esq. Juárez", detalle: "Luminaria fundida desde hace 3 días.", reportadoPor: "Vecino Ejemplar", emailUsuario: "vecino@copaci.org", estado: "Pendiente" }
+    ];
+
+    let dbTramites = JSON.parse(localStorage.getItem('copaci_v2_docs')) || [];
+    let sesionActual = null;
+
+    function showToast(msg, type = 'info') {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      toast.className = `toast toast-${type}`;
+      toast.innerText = msg;
+      container.appendChild(toast);
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        setTimeout(() => toast.remove(), 300);
+      }, 3000);
+    }
+
+    function switchAuth(mode) {
+      document.getElementById('box-login').style.display = (mode === 'login') ? 'block' : 'none';
+      document.getElementById('box-registro').style.display = (mode === 'registro') ? 'block' : 'none';
+      document.getElementById('error-login').style.display = 'none';
+      document.getElementById('error-registro').style.display = 'none';
+    }
+
+    document.getElementById('form-login').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const email = document.getElementById('login-email').value.toLowerCase().trim();
+      const pass = document.getElementById('login-password').value.trim();
+
+      const user = dbUsuarios.find(u => u.email === email && u.pass === pass);
+      if (user) {
+        sesionActual = user;
+        showToast(`Bienvenido/a, ${user.nombre}`, 'success');
+        launchDashboard();
+      } else {
+        document.getElementById('error-login').style.display = 'block';
+      }
+    });
+
+    document.getElementById('form-registro').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const email = document.getElementById('reg-email').value.toLowerCase().trim();
+
+      if (dbUsuarios.some(u => u.email === email)) {
+        document.getElementById('error-registro').style.display = 'block';
+        return;
+      }
+
+      const nuevoVecino = {
+        nombre: document.getElementById('reg-nombre').value.trim(),
+        domicilio: document.getElementById('reg-domicilio').value.trim(),
+        email: email,
+        pass: document.getElementById('reg-password').value.trim(),
+        rol: "Vecino"
+      };
+
+      dbUsuarios.push(nuevoVecino);
+      localStorage.setItem('copaci_v2_users', JSON.stringify(dbUsuarios));
+      showToast('Registro exitoso. Procede a ingresar.', 'success');
+      this.reset();
+      switchAuth('login');
+    });
+
+    function launchDashboard() {
+      document.getElementById('screen-auth').style.display = 'none';
+
+      if (sesionActual.rol === 'Administrador') {
+        document.getElementById('interface-admin').style.display = 'flex';
+        document.getElementById('admin-user-name').innerText = sesionActual.nombre;
+        renderAdminIncidencias();
+      } else {
+        document.getElementById('interface-vecino').style.display = 'flex';
+        document.getElementById('vecino-user-name').innerText = sesionActual.nombre;
+        renderVecinoData();
+      }
+    }
+
+    function logout() {
+      sesionActual = null;
+      document.getElementById('interface-admin').style.display = 'none';
+      document.getElementById('interface-vecino').style.display = 'none';
+      document.getElementById('screen-auth').style.display = 'flex';
+      document.getElementById('form-login').reset();
+      switchAuth('login');
+      showToast('Sesión cerrada correctamente');
+    }
+
+    document.getElementById('form-vecino-incidencia').addEventListener('submit', function(e) {
+      e.preventDefault();
+      dbIncidencias.push({
+        id: Date.now(),
+        categoria: document.getElementById('v-inc-cat').value,
+        lugar: document.getElementById('v-inc-lugar').value.trim(),
+        detalle: document.getElementById('v-inc-detalle').value.trim(),
+        reportadoPor: sesionActual.nombre,
+        emailUsuario: sesionActual.email,
+        estado: 'Pendiente'
+      });
+      localStorage.setItem('copaci_v2_issues', JSON.stringify(dbIncidencias));
+      showToast('Incidencia reportada a la mesa de control', 'success');
+      this.reset();
+      renderVecinoData();
+    });
+
+    document.getElementById('form-vecino-tramite').addEventListener('submit', function(e) {
+      e.preventDefault();
+      dbTramites.push({
+        codigo: 'SOL-' + Math.floor(100 + Math.random() * 900),
+        usuario: sesionActual.nombre,
+        emailUsuario: sesionActual.email,
+        asunto: document.getElementById('v-tra-tipo').value,
+        motivo: document.getElementById('v-tra-motivo').value.trim(),
+        estatus: 'Pendiente'
+      });
+      localStorage.setItem('copaci_v2_docs', JSON.stringify(dbTramites));
+      showToast('Solicitud de trámite enviada', 'success');
+      this.reset();
+      renderVecinoData();
+    });
+
+    function renderVecinoData() {
+      const myIssues = dbIncidencias.filter(i => i.emailUsuario === sesionActual.email);
+      const myDocs = dbTramites.filter(d => d.emailUsuario === sesionActual.email);
+
+      const bodyInc = document.getElementById('vecino-table-incidencias');
+      bodyInc.innerHTML = myIssues.length ? '' : '<tr><td colspan="3" style="text-align:center; padding: 20px; color: var(--text-secondary);">No has registrado reportes aún.</td></tr>';
+      myIssues.forEach(i => {
+        const claseEstado = i.estado === 'Pendiente' ? 'estado-pendiente' : (i.estado === 'En Proceso' ? 'estado-proceso' : 'estado-resuelto');
+        bodyInc.innerHTML += `
+          <tr>
+            <td><strong>${i.categoria}</strong></td>
+            <td>${i.lugar}</td>
+            <td><span class="etiqueta-estado ${claseEstado}">${i.estado}</span></td>
+          </tr>
+        `;
+      });
+
+      const bodyDocs = document.getElementById('vecino-table-tramites');
+      bodyDocs.innerHTML = myDocs.length ? '' : '<tr><td colspan="3" style="text-align:center; padding: 20px; color: var(--text-secondary);">No tienes trámites en curso.</td></tr>';
+      myDocs.forEach(d => {
+        bodyDocs.innerHTML += `
+          <tr>
+            <td><strong style="color: var(--accent);">${d.codigo}</strong></td>
+            <td>${d.asunto}</td>
+            <td><span class="etiqueta-estado estado-pendiente">${d.estatus}</span></td>
+          </tr>
+        `;
+      });
+    }
+
+    function renderAdminIncidencias() {
+      const search = (document.getElementById('admin-search').value || '').toLowerCase().trim();
+      
+      const filtered = dbIncidencias.filter(i => 
+        i.categoria.toLowerCase().includes(search) ||
+        i.lugar.toLowerCase().includes(search) ||
+        i.detalle.toLowerCase().includes(search) ||
+        i.reportadoPor.toLowerCase().includes(search)
+      );
+
+      document.getElementById('stat-total').innerText = dbIncidencias.length;
+      document.getElementById('stat-pendientes').innerText = dbIncidencias.filter(i => i.estado === 'Pendiente').length;
+      document.getElementById('stat-resueltos').innerText = dbIncidencias.filter(i => i.estado === 'Resuelto').length;
+
+      const body = document.getElementById('admin-table-body');
+      body.innerHTML = filtered.length ? '' : '<tr><td colspan="6" style="text-align:center; padding: 30px; color: var(--text-secondary);">No hay incidencias que coincidan con la búsqueda.</td></tr>';
+
+      filtered.forEach(inc => {
+        const idxReal = dbIncidencias.findIndex(item => item.id === inc.id);
+        const claseEstado = inc.estado === 'Pendiente' ? 'estado-pendiente' : (inc.estado === 'En Proceso' ? 'estado-proceso' : 'estado-resuelto');
+
+        body.innerHTML += `
+          <tr>
+            <td><strong>${inc.reportadoPor}</strong><br><span style="font-size: 0.75rem; color: var(--text-secondary);">${inc.emailUsuario || ''}</span></td>
+            <td>${inc.categoria}</td>
+            <td>${inc.lugar}</td>
+            <td style="color: var(--text-secondary); max-width: 250px;">${inc.detalle}</td>
+            <td><span class="etiqueta-estado ${claseEstado}">${inc.estado}</span></td>
+            <td style="text-align: center;">
+              <button class="btn-tabla btn-estatus" onclick="adminCambiarEstado(${idxReal})">Estado</button>
+              <button class="btn-tabla btn-editar" onclick="adminEditarReporte(${idxReal})">Editar</button>
+              <button class="btn-tabla btn-borrar" onclick="adminEliminarReporte(${idxReal})">Borrar</button>
+            </td>
+          </tr>
+        `;
+      });
+    }
+
+    function adminCambiarEstado(index) {
+      const secuencia = ['Pendiente', 'En Proceso', 'Resuelto'];
+      const actual = dbIncidencias[index].estado;
+      const siguiente = secuencia[(secuencia.indexOf(actual) + 1) % secuencia.length];
+      
+      dbIncidencias[index].estado = siguiente;
+      localStorage.setItem('copaci_v2_issues', JSON.stringify(dbIncidencias));
+      showToast(`Estado cambiado a: ${siguiente}`, 'info');
+      renderAdminIncidencias();
+    }
+
+    function adminEditarReporte(index) {
+      const actual = dbIncidencias[index].detalle;
+      const nuevo = prompt("Modificar la descripción del reporte:", actual);
+      if (nuevo !== null && nuevo.trim() !== "") {
+        dbIncidencias[index].detalle = nuevo.trim();
+        localStorage.setItem('copaci_v2_issues', JSON.stringify(dbIncidencias));
+        showToast("Reporte modificado", "success");
+        renderAdminIncidencias();
+      }
+    }
+
+    function adminEliminarReporte(index) {
+      if (confirm("¿Seguro que deseas eliminar este reporte de la base de datos?")) {
+        dbIncidencias.splice(index, 1);
+        localStorage.setItem('copaci_v2_issues', JSON.stringify(dbIncidencias));
+        showToast("Reporte eliminado", "error");
+        renderAdminIncidencias();
+      }
+    }
+  </script>
+</body>
+</html>
